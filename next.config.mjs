@@ -1,10 +1,19 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
-    domains: [
-      "faces.nyc3.digitaloceanspaces.com",
-      "images.pexels.com",
-      "api.deepai.org",
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "faces.nyc3.digitaloceanspaces.com",
+      },
+      {
+        protocol: "https",
+        hostname: "images.pexels.com",
+      },
+      {
+        protocol: "https",
+        hostname: "api.deepai.org",
+      },
     ],
   },
   reactStrictMode: false,
