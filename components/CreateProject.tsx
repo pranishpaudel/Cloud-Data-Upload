@@ -24,12 +24,12 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2 } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import { useToast } from "@/components/ui/use-toast";
 import { updateShowProjectState } from "@/helpers/state";
 import { useAtom } from "jotai";
 
-function PlusIcon(props) {
+function PlusIcon(props: React.SVGProps<SVGSVGElement>) {
   return (
     <svg
       {...props}
@@ -87,9 +87,10 @@ const CreateProject = () => {
       const data2 = await response2.data;
       return;
     } catch (error) {
+      const axiosError = error as AxiosError<{ message: string }>;
       toast({
         title: "Project creation failed",
-        description: error?.response?.data?.message || "An error occurred",
+        description: axiosError?.response?.data?.message || "An error occurred",
         variant: "destructive",
       });
       return;

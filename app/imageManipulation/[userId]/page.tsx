@@ -134,7 +134,7 @@ const Page = ({ params }: { params: any }) => {
 
         const response = await fetch("/api/handleSnapshots", {
           method: "POST",
-          body: formData,
+          body: formData as unknown as BodyInit,
         });
 
         if (!response.ok) {

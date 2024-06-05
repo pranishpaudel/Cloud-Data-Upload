@@ -23,7 +23,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2 } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import { useToast } from "@/components/ui/use-toast";
 import { createFolderAtom } from "@/helpers/state";
 import { useAtom } from "jotai";
@@ -75,9 +75,10 @@ const CreateFolder = ({
       });
       return;
     } catch (error) {
+      const axiosError = error as AxiosError<{ message: string }>;
       toast({
         title: "Folder creation failed",
-        description: error?.response.data.message,
+        description: axiosError?.response?.data?.message || "An error occurred",
         variant: "destructive",
       });
       return;
@@ -85,7 +86,7 @@ const CreateFolder = ({
       setisLoading(false);
       setIsOpen(false);
       return;
-    } // Close the dialog after submission
+    }
   }
 
   return (

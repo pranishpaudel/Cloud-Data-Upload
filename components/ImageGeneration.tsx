@@ -12,9 +12,10 @@ import { Skeleton } from "./ui/skeleton";
 export default function Component() {
   const [isMounted, setIsMounted] = useState(false);
   const { transcript, resetTranscript, listening } = useSpeechRecognition();
-  const [textInput, setTextInput] = useState();
-  const [imagePath, setImagePath] = useState();
+  const [textInput, setTextInput] = useState<string>("");
+  const [imagePath, setImagePath] = useState<string>("");
   const [generatingImage, setGeneratingImage] = useState(false);
+
   useEffect(() => {
     setImagePath("");
     setIsMounted(true);
@@ -174,7 +175,9 @@ export default function Component() {
   );
 }
 
-function ImageIcon(props) {
+interface IconProps extends React.SVGProps<SVGSVGElement> {}
+
+const ImageIcon: React.FC<IconProps> = (props) => {
   return (
     <svg
       {...props}
@@ -193,9 +196,9 @@ function ImageIcon(props) {
       <path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21" />
     </svg>
   );
-}
+};
 
-function MenuIcon(props) {
+const MenuIcon: React.FC<IconProps> = (props) => {
   return (
     <svg
       {...props}
@@ -214,9 +217,9 @@ function MenuIcon(props) {
       <line x1="4" x2="20" y1="18" y2="18" />
     </svg>
   );
-}
+};
 
-function MicIcon(props) {
+const MicIcon: React.FC<IconProps> = (props) => {
   return (
     <svg
       {...props}
@@ -235,4 +238,4 @@ function MicIcon(props) {
       <line x1="12" x2="12" y1="19" y2="22" />
     </svg>
   );
-}
+};

@@ -1,7 +1,7 @@
 // CountdownTimer.js
 import React, { useState, useEffect } from "react";
 import { Button } from "./ui/button";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import { useToast } from "@/components/ui/use-toast";
 import { otpAtom, otpRetryAtom } from "@/helpers/state";
 import { useAtom } from "jotai";
@@ -27,9 +27,10 @@ const CountdownTimer = ({ email }: iprops) => {
         return;
       }
     } catch (error) {
+      const axiosError = error as AxiosError<{ message: string }>;
       toast({
         title: "Otp send operation failed",
-        description: error?.response?.data?.message,
+        description: axiosError?.response?.data?.message || "An error occurred",
         variant: "destructive",
       });
     }

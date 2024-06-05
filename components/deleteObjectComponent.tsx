@@ -17,12 +17,12 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { Input } from "@/components/ui/input"; // Make sure this component exists in your project
-import { Button } from "@/components/ui/button"; // Make sure this component exists in your project
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 import { Loader2, Copy, Check } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import axios from "axios";
+import axios, { AxiosResponse } from "axios";
 import { useToast } from "@/components/ui/use-toast";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { updateShowProjectState, updateShowFolderState } from "@/helpers/state";
@@ -45,8 +45,8 @@ const DeleteObject = ({
   projectNameFromFolder,
 }: iDeleteObjectProps) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [isLoading, setisLoading] = useState(false);
-  const [textCopied, settextCopied] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [textCopied, setTextCopied] = useState(false);
   const [showProject, setShowProject] = useAtom(updateShowProjectState);
   const [showFolder, setShowFolder] = useAtom(updateShowFolderState);
   const { toast } = useToast();
@@ -55,6 +55,7 @@ const DeleteObject = ({
   const deletionSchema = z.object({
     confirmDeletionString: z.string().min(1),
   });
+
   const form = useForm<z.infer<typeof deletionSchema>>({
     resolver: zodResolver(deletionSchema),
     defaultValues: {
@@ -64,50 +65,52 @@ const DeleteObject = ({
 
   async function onSubmit(values: z.infer<typeof deletionSchema>) {
     try {
-      setisLoading(true);
+      setIsLoading(true);
       const deletionString = values.confirmDeletionString;
+
+      let response: AxiosResponse;
+
       if (deleteObjectType === "Project") {
-        var response = await axios.post("/api/deleteS3Object", {
+        response = await axios.post("/api/deleteS3Object", {
           userId,
           projectName: objectName,
           projectId: objectId,
-          confirmDeletionString: values.confirmDeletionString,
+          confirmDeletionString: deletionString,
           deleteObjectType: "Project",
         });
       } else if (deleteObjectType === "Folder") {
-        var response = await axios.post("/api/deleteS3Object", {
+        response = await axios.post("/api/deleteS3Object", {
           userId,
           projectId: projectIdFromFolder,
           projectName: projectNameFromFolder,
           folderName: objectName,
-          confirmDeletionString: values.confirmDeletionString,
+          confirmDeletionString: deletionString,
           deleteObjectType: "Folder",
         });
+      } else {
+        throw new Error("Invalid delete object type");
       }
-      const data = await response.data;
+
+      const data = response.data;
       toast({
         title: `${deleteObjectType} and its data deleted successfully`,
         description: data?.message,
       });
-
-      return;
-    } catch (error) {
+    } catch (error: any) {
       toast({
         title: `${deleteObjectType} deletion failed`,
-        description: error?.response.data.message,
+        description: error?.response?.data?.message || error.message,
         variant: "destructive",
       });
-      return;
     } finally {
-      setisLoading(false);
+      setIsLoading(false);
       setIsOpen(false);
       if (deleteObjectType === "Project") {
         setShowProject(!showProject);
       } else {
         setShowFolder(!showFolder);
       }
-      return;
-    } // Close the dialog after submission
+    }
   }
 
   return (
@@ -145,9 +148,9 @@ const DeleteObject = ({
                           <>
                             <Check
                               onClick={() => {
-                                settextCopied(true);
+                                setTextCopied(true);
                                 navigator.clipboard.writeText(objectName);
-                                setTimeout(() => settextCopied(false), 3000);
+                                setTimeout(() => setTextCopied(false), 3000);
                               }}
                               className="text-white h-[20px] w-[20px] hover:brightness-50 ml-2"
                             />
@@ -156,9 +159,9 @@ const DeleteObject = ({
                           <>
                             <Copy
                               onClick={() => {
-                                settextCopied(true);
+                                setTextCopied(true);
                                 navigator.clipboard.writeText(objectName);
-                                setTimeout(() => settextCopied(false), 3000);
+                                setTimeout(() => setTextCopied(false), 3000);
                               }}
                               className="text-white h-[20px] w-[20px] hover:brightness-50 ml-2"
                             />

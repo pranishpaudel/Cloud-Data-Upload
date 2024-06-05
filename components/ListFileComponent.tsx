@@ -184,7 +184,9 @@ const ListFileComponent = ({ files, folderName }: iListProps) => {
 
 export default ListFileComponent;
 
-function TrashIcon(props) {
+interface TrashIconProps extends React.SVGProps<SVGSVGElement> {}
+
+const TrashIcon: React.FC<TrashIconProps> = (props) => {
   return (
     <svg
       {...props}
@@ -203,4 +205,4 @@ function TrashIcon(props) {
       <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
     </svg>
   );
-}
+};

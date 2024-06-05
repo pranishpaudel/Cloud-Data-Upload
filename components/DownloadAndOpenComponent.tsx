@@ -1,5 +1,3 @@
-"use client";
-
 import { useCallback } from "react";
 import { Button } from "./ui/button";
 import axios from "axios";
@@ -30,7 +28,6 @@ const DownloadAndOpenComponent = ({
       });
       const data = response.data.url;
       if (data) {
-        // window.open(data, "_blank");
         window.open(data, "_blank");
       } else {
         console.error("URL not found in the response.");
@@ -58,7 +55,9 @@ const DownloadAndOpenComponent = ({
   );
 };
 
-function DownloadIcon(props) {
+interface IconProps extends React.SVGProps<SVGSVGElement> {}
+
+function DownloadIcon(props: IconProps) {
   return (
     <svg
       {...props}
@@ -79,7 +78,7 @@ function DownloadIcon(props) {
   );
 }
 
-function EyeIcon(props) {
+function EyeIcon(props: IconProps) {
   return (
     <svg
       {...props}

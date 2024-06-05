@@ -1,5 +1,5 @@
 import { atom } from "jotai";
-
+import { File } from "buffer";
 const otpAtom = atom("");
 const otpRetryAtom = atom(false);
 const updateShowProjectState = atom(false);
@@ -19,7 +19,7 @@ const skeltonPhotoDimensions = atom({
   height: "",
 });
 const snapShotDataAtom = atom({});
-const reactFormDataAtom = atom(null);
+const reactFormDataAtom = atom<File | null>(null);
 const imageMixLoaderAtom = atom(false);
 export {
   otpAtom,
