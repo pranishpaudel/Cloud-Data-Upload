@@ -3,6 +3,7 @@ import { S3Client, GetObjectCommand } from "@aws-sdk/client-s3";
 import { auth } from "@/auth";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import prisma from "@/lib/db/db.config";
+
 export async function POST(req: NextRequest, res: NextResponse) {
   try {
     const reqBody = await req.json();
@@ -48,21 +49,26 @@ export async function POST(req: NextRequest, res: NextResponse) {
     });
 
     const getObject = async (key: string) => {
+      let command: GetObjectCommand;
       if (type === "Download") {
         expiresInSec = 120;
-        var command = new GetObjectCommand({
+        command = new GetObjectCommand({
           Bucket: "pshow",
           Key: key,
           ResponseContentDisposition: `attachment; filename="${fileName}"`,
         });
       } else if (type === "Open") {
         expiresInSec = 86400;
-        var command = new GetObjectCommand({
+        command = new GetObjectCommand({
           Bucket: "pshow",
           Key: key,
         });
+      } else {
+        return null;
       }
-      const url = getSignedUrl(client, command, { expiresIn: expiresInSec });
+      const url = await getSignedUrl(client, command, {
+        expiresIn: expiresInSec,
+      });
       return url;
     };
 
