@@ -1,5 +1,5 @@
 import axios from "axios";
-import NextAuth, { User } from "next-auth";
+import NextAuth from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 import prisma from "@/lib/db/db.config";
 import bcrypt from "bcrypt";
@@ -14,11 +14,11 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       async authorize(credentials, req) {
         const { identifier, password } = credentials;
         try {
-          const user = (await prisma.user.findUnique({
+          const user = await prisma.user.findUnique({
             where: {
               email: identifier as string,
             },
-          })) as any;
+          });
 
           if (!user) throw new Error("User not found");
 
@@ -31,7 +31,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           );
           if (!isValidPassword) throw new Error("Invalid password");
 
-          return user;
+          return user ;
         } catch (error: any) {
           throw new Error(error.message);
         }
@@ -51,7 +51,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     },
     async jwt({ token, user }) {
       if (user) {
-        token.userid = user.userid;
+        token.userid = user.id;
         token.isVerified = user.isVerified;
         token.isAdmin = user.isAdmin;
         token.projects = user.projects;
@@ -68,5 +68,4 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     maxAge: 60 * 60 * 24,
   },
   secret: process.env.AUTH_SECRET,
-  trustHost: true,
 });

@@ -18,14 +18,13 @@ import { Button } from "@/components/ui/button";
 import ListFileComponent from "@/components/ListFileComponent";
 import UploadComponent from "@/components/UploadComponent";
 import CreateFolder from "@/components/CreateFolder";
-interface Project {
-  id: string;
-  name: string;
-}
+
 const Page = ({ params }: any) => {
+  // Renamed to start with uppercase
   const projectId = params.projectId;
+  //next auth client session
   const { data: session, status } = useSession();
-  const [project, setProject] = useState<Project | null>(null);
+  const [project, setProject] = useState([]);
   const [fileListings, setfileListings] = useState([]);
   const [showFile, setShowFile] = useAtom(updateShowFileState);
   const [openButtonOfListFolderClicked, setopenButtonOfListFolderClicked] =
@@ -116,7 +115,7 @@ const Page = ({ params }: any) => {
             className="flex justify-start text-black relative left-[150px] "
           >
             <ArrowLeft
-              onClick={backButtonHandler as any}
+              onClick={backButtonHandler}
               className="h-[50px] w-[50px] hover:brighness-50 hover:text-blue-600"
             />
           </div>
@@ -156,8 +155,8 @@ const Page = ({ params }: any) => {
           ) : (
             <div className="h-[350px] w-[80vw] flex justify-center items-center  bg-gray-100 overflow-y-auto border ml-[140px] rounded-md ">
               <ListFolderComponent
-                userId={userId as string}
-                projectName={project?.name as string}
+                userId={userId}
+                projectName={project?.name}
                 projectId={projectId}
               />
             </div>
@@ -167,8 +166,8 @@ const Page = ({ params }: any) => {
           <>
             <div className="flex justify-center items-center border-0 mt-1">
               <CreateFolder
-                userId={userId as string}
-                projectName={project?.name as string}
+                userId={userId}
+                projectName={project?.name}
                 projectId={projectId}
               />
             </div>
