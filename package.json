@@ -25,6 +25,7 @@
     "@radix-ui/react-switch": "^1.0.3",
     "@radix-ui/react-toast": "^1.1.5",
     "@radix-ui/react-tooltip": "^1.0.7",
+    "aws-sdk": "^2.1634.0",
     "axios": "^1.7.2",
     "bcrypt": "^5.1.1",
     "class-variance-authority": "^0.7.0",
