@@ -3,9 +3,9 @@ import { auth } from "@/auth";
 import GetSession from "@/components/getSession";
 import { getUserProjects } from "@/lib/getUserProjects";
 import CreateProject from "@/components/CreateProject";
-import ShowProjectsComponent from "@/components/ShowProjectsComponent";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import ShowProjectsComponent from "@/components/showProjectsComponent";
 
 function SearchIcon(props) {
   return (
