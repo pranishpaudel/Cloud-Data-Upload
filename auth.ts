@@ -31,7 +31,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           );
           if (!isValidPassword) throw new Error("Invalid password");
 
-          return user ;
+          return user as any;
         } catch (error: any) {
           throw new Error(error.message);
         }

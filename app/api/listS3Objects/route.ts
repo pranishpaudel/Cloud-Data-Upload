@@ -1,31 +1,29 @@
 import { NextResponse, NextRequest } from "next/server";
-import {
-  S3Client,
-  GetObjectCommand,
-  PutObjectCommand,
-  ListObjectsV2Command,
-} from "@aws-sdk/client-s3";
+import { S3Client, ListObjectsV2Command } from "@aws-sdk/client-s3";
 import { auth } from "@/auth";
 
-export async function POST(req: NextRequest, res: NextResponse) {
+export async function POST(req: NextRequest) {
   const reqBody = await req.json();
   const isUserAuthenticated = await auth();
-  const { userId, objectType } = await reqBody;
+  const { userId, objectType } = reqBody;
+
   function isValidFileName(filename: string) {
-    const imageRegex = /^[a-zA-Z0-9 _-]+\.(png|jpg|jpeg|pdf|doc|docx)$/i;
+    const imageRegex =
+      /^[a-zA-Z0-9 _-]+\.(png|jpg|jpeg|pdf|doc|docx|mp4|mov|env|html|css|js|ts|py|txt|pptx|ppt)$/i;
     return imageRegex.test(filename);
   }
 
-  if ((isUserAuthenticated?.user.id as string) !== userId) {
-    return NextResponse.json(
-      { message: "User is not authorized", success: false },
-      { status: 401 }
-    );
-  }
   if (!isUserAuthenticated) {
     return NextResponse.json(
       { message: "User is not authenticated", success: false },
       { status: 400 }
+    );
+  }
+
+  if ((isUserAuthenticated.user.id as string) !== userId) {
+    return NextResponse.json(
+      { message: "User is not authorized", success: false },
+      { status: 401 }
     );
   }
 
@@ -40,7 +38,7 @@ export async function POST(req: NextRequest, res: NextResponse) {
   async function listObjects() {
     const command = new ListObjectsV2Command({
       Bucket: "pshow",
-      Key: "/",
+      Prefix: `${userId}/`,
     });
     const result = await client.send(command);
     return result;
@@ -48,7 +46,7 @@ export async function POST(req: NextRequest, res: NextResponse) {
 
   const allObjectsRaw = await listObjects();
   const allObjects = allObjectsRaw.Contents as any[];
-  const newObjectsAfterFiler = allObjects.filter((obj) => {
+  const newObjectsAfterFilter = allObjects.filter((obj) => {
     const splitArray = obj.Key.split("/");
 
     if (objectType === "file") {
@@ -65,7 +63,8 @@ export async function POST(req: NextRequest, res: NextResponse) {
       );
     }
   });
-  const newObjectsAfterMap = newObjectsAfterFiler.map(
+
+  const newObjectsAfterMap = newObjectsAfterFilter.map(
     ({ StorageClass, ETag, ...rest }) => rest
   );
 
