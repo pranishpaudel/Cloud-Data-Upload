@@ -149,7 +149,7 @@ export async function POST(req: NextRequest, res: NextResponse) {
   async function deleteAllObjects(bucket: string, prefix: string) {
     const objects = await listObjects(bucket, prefix);
     for (const objectKey of objects) {
-      await deleteObject(bucket, objectKey);
+      await deleteObject(bucket, objectKey as string);
     }
   }
 
