@@ -129,7 +129,7 @@ export async function POST(req: NextRequest, res: NextResponse) {
     },
   });
 
-  async function listObjects(bucket, prefix) {
+  async function listObjects(bucket: string, prefix: string) {
     const command = new ListObjectsV2Command({
       Bucket: bucket,
       Prefix: prefix,
@@ -138,7 +138,7 @@ export async function POST(req: NextRequest, res: NextResponse) {
     return response.Contents ? response.Contents.map((item) => item.Key) : [];
   }
 
-  async function deleteObject(bucket, key) {
+  async function deleteObject(bucket: string, key: string) {
     const command = new DeleteObjectCommand({
       Bucket: bucket,
       Key: key,
@@ -146,7 +146,7 @@ export async function POST(req: NextRequest, res: NextResponse) {
     await client.send(command);
   }
 
-  async function deleteAllObjects(bucket, prefix) {
+  async function deleteAllObjects(bucket: string, prefix: string) {
     const objects = await listObjects(bucket, prefix);
     for (const objectKey of objects) {
       await deleteObject(bucket, objectKey);
