@@ -12,6 +12,8 @@ export async function middleware(request: NextRequest) {
     req: request,
     secret: AUTH_TOKEN,
   } as any);
+  console.log("Token chai", token);
+  console.log("Pathname chai", pathname);
   if (
     !token &&
     (pathname.startsWith("/dashboard") ||
@@ -20,11 +22,13 @@ export async function middleware(request: NextRequest) {
       pathname.startsWith("/imageManipulation") ||
       pathname.startsWith("/imageMixActions"))
   ) {
+    console.log("ma bina token wala executed  ");
     return NextResponse.redirect(new URL("/login", request.url));
   } else if (
     token &&
     (pathname.startsWith("/register") || pathname.startsWith("/login"))
   ) {
+    console.log("ma  token wala executed  ");
     return NextResponse.redirect(new URL("/dashboard", request.url));
   }
 
