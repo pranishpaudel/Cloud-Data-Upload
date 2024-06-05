@@ -6,8 +6,14 @@ import CreateProject from "@/components/CreateProject";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import ShowProjectsComponent from "@/components/showProjectsComponent";
-
-function SearchIcon(props) {
+interface User {
+  id: string;
+  isVerified: boolean;
+  isAdmin: boolean;
+  email: string;
+  name: string;
+}
+function SearchIcon(props: React.SVGProps<SVGSVGElement>) {
   return (
     <svg
       {...props}
