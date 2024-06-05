@@ -17,8 +17,11 @@ export async function POST(req: NextRequest, res: NextResponse) {
   const formData = await req.formData();
 
   const file = formData.get("file");
-  if (!file) {
-    return NextResponse.json({ error: "No files received." }, { status: 400 });
+  if (!file || !(file instanceof File)) {
+    return NextResponse.json(
+      { error: "No valid files received." },
+      { status: 400 }
+    );
   }
 
   const buffer = Buffer.from(await file.arrayBuffer());
