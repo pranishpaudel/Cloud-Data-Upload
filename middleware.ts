@@ -4,17 +4,14 @@ import { getToken } from "next-auth/jwt";
 export async function middleware(request: NextRequest) {
   const url = request.nextUrl;
   const pathname = url.pathname;
-
-  if (!process.env.AUTH_SECRET) {
-    throw new Error("AUTH_SECRET is not defined in environment variables.");
+  let AUTH_TOKEN = process.env.AUTH_SECRET;
+  if (!AUTH_TOKEN) {
+    throw new Error("No api key found");
   }
-
   const token = await getToken({
     req: request,
-    secret: process.env.AUTH_SECRET,
-    salt: "dsad23423cgt1aadaaaaaa",
-  });
-
+    secret: AUTH_TOKEN,
+  } as any);
   if (
     !token &&
     (pathname.startsWith("/dashboard") ||
