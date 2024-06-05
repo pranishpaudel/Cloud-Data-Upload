@@ -13,7 +13,7 @@ import {
 } from "@/helpers/state";
 
 interface iShowProjectsComponentProps {
-  projects: { id: string; name: string; updatedAt: string }[];
+  projects: { id: string; name: string; updatedAt: Date }[];
 }
 
 const ShowProjectsComponent: React.FC<iShowProjectsComponentProps> = ({
