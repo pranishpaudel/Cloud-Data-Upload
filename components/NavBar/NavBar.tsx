@@ -7,9 +7,11 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import VCAN from "@/public/defaultImage/vcan.png";
 import { useEffect } from "react";
 import { auth } from "@/auth";
 import { SignOut } from "@/components/SignOut";
+import Image from "next/image";
 const NavBarItems = [
   {
     id: 1,
@@ -57,7 +59,13 @@ async function Component() {
   return (
     <div className="  px-4 py-3">
       <span>
-        <ImUpload className=" h-[50px] w-[50px]  rounded-[50px] flex" />
+        <Image
+          src={VCAN}
+          alt="LOGO"
+          height={50}
+          width={50}
+          className="h-[50px] w-[50px]  rounded-[50px] flex"
+        />
       </span>
 
       <div className="flex justify-evenly">
