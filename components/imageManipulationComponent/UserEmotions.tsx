@@ -10,11 +10,18 @@ interface iEmotionProps {
   userImage: string;
 }
 
+interface EmotionData {
+  faces: {
+    dominant_emotion: string;
+    emotion: { [key: string]: number };
+  }[];
+}
+
 export default function UserEmotions({ userImage }: iEmotionProps) {
-  const [reactFormDataState, setreactFormDataState] =
+  const [reactFormDataState, setReactFormDataState] =
     useAtom(reactFormDataAtom);
   const [isLoading, setIsLoading] = useState(true);
-  const [emotionData, setEmotionData] = useState(null);
+  const [emotionData, setEmotionData] = useState<EmotionData | null>(null);
 
   const fetchData = useCallback(async () => {
     try {
@@ -23,7 +30,7 @@ export default function UserEmotions({ userImage }: iEmotionProps) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ imageUrl: userImage }),
       });
-      const data = await response.json();
+      const data: EmotionData = await response.json();
 
       setEmotionData(data);
       setIsLoading(false);
@@ -46,8 +53,8 @@ export default function UserEmotions({ userImage }: iEmotionProps) {
     roundedEmotions.push([key, roundedValue]);
   }
 
-  function getEmotionIcon(emotionName) {
-    switch (emotionName) {
+  function getEmotionIcon(emotionName: string) {
+    switch (emotionName.toLowerCase()) {
       case "happy":
         return <SmileIcon className="w-6 h-6 text-primary" />;
       case "sad":
@@ -149,21 +156,7 @@ export default function UserEmotions({ userImage }: iEmotionProps) {
     </Card>
   );
 }
-function getEmotionIcon(emotionName) {
-  switch (emotionName) {
-    case "Joy":
-      return <SmileIcon className="w-6 h-6 text-primary" />;
-    case "Sadness":
-      return <FrownIcon className="w-6 h-6 text-red-500" />;
-    case "Anger":
-      return <AngryIcon className="w-6 h-6 text-orange-500" />;
-    case "Fear":
-      return <GhostIcon className="w-6 h-6 text-purple-500" />;
-    default:
-      return null;
-  }
-}
-function SurpriseIcon(props) {
+function SurpriseIcon(props: React.SVGProps<SVGSVGElement>) {
   return (
     <svg
       {...props}
@@ -186,7 +179,7 @@ function SurpriseIcon(props) {
   );
 }
 
-function DisgustIcon(props) {
+function DisgustIcon(props: React.SVGProps<SVGSVGElement>) {
   return (
     <svg
       {...props}
@@ -208,7 +201,7 @@ function DisgustIcon(props) {
   );
 }
 
-function AngryIcon(props) {
+function AngryIcon(props: React.SVGProps<SVGSVGElement>) {
   return (
     <svg
       {...props}
@@ -226,13 +219,13 @@ function AngryIcon(props) {
       <path d="M16 16s-1.5-2-4-2-4 2-4 2" />
       <path d="M7.5 8 10 9" />
       <path d="m14 9 2.5-1" />
-      <path d="M9 10h0" />
-      <path d="M15 10h0" />
+      <line x1="9" y1="10" x2="9.01" y2="10" />
+      <line x1="15" y1="10" x2="15.01" y2="10" />
     </svg>
   );
 }
 
-function FrownIcon(props) {
+function FrownIcon(props: React.SVGProps<SVGSVGElement>) {
   return (
     <svg
       {...props}
@@ -253,7 +246,8 @@ function FrownIcon(props) {
     </svg>
   );
 }
-function NeutralIcon(props) {
+
+function NeutralIcon(props: React.SVGProps<SVGSVGElement>) {
   return (
     <svg
       {...props}
@@ -274,7 +268,8 @@ function NeutralIcon(props) {
     </svg>
   );
 }
-function GhostIcon(props) {
+
+function GhostIcon(props: React.SVGProps<SVGSVGElement>) {
   return (
     <svg
       {...props}
@@ -295,7 +290,7 @@ function GhostIcon(props) {
   );
 }
 
-function SmileIcon(props) {
+function SmileIcon(props: React.SVGProps<SVGSVGElement>) {
   return (
     <svg
       {...props}
