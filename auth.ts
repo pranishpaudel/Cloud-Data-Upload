@@ -1,5 +1,5 @@
 import axios from "axios";
-import NextAuth from "next-auth";
+import NextAuth, { User } from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 import prisma from "@/lib/db/db.config";
 import bcrypt from "bcrypt";
@@ -31,7 +31,16 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           );
           if (!isValidPassword) throw new Error("Invalid password");
 
-          return user;
+          const nextAuthUser: User = {
+            userid: user.id,
+            name: user.name || "",
+            email: user.email,
+            isVerified: user.isVerified,
+            isAdmin: user.isAdmin,
+            projects: [],
+          };
+
+          return nextAuthUser;
         } catch (error: any) {
           throw new Error(error.message);
         }
@@ -51,7 +60,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     },
     async jwt({ token, user }) {
       if (user) {
-        token.userid = user.id;
+        token.userid = user.userid;
         token.isVerified = user.isVerified;
         token.isAdmin = user.isAdmin;
         token.projects = user.projects;
