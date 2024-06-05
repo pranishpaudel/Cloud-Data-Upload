@@ -105,7 +105,7 @@ export default function Component() {
                   className="w-full rounded-md border border-gray-300 p-3 pr-12 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   placeholder="Speak to generate an image..."
                   value={textInput}
-                  onChange={(e) => setTextInput(e.target.value)}
+                  onChange={(e: any) => setTextInput(e.target.value)}
                 />
 
                 <span className="relative w-[50px] flex justify-start items-start top-[-42px] text-gray-500 hover:text-gray-700 left-[15px]">
