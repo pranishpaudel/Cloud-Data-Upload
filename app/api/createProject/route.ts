@@ -5,15 +5,16 @@ import { NextResponse, NextRequest } from "next/server";
 
 export async function POST(req: NextRequest, res: NextResponse) {
   const reqBody = await req.json();
-  const { name, description, folder } = await reqBody;
+  const { name, description, folder } = reqBody;
 
   try {
     const validation = projectSchema.parse({ name, description, folder });
     const authUser = await auth();
-    const userIdForQuery = authUser.user.id as string;
     if (!authUser) {
       return NextResponse.json({ message: "User not found" }, { status: 401 });
     }
+    const userIdForQuery = authUser.user.id as string;
+
     try {
       const checkProject = await prisma.project.findFirst({
         where: {
@@ -32,13 +33,12 @@ export async function POST(req: NextRequest, res: NextResponse) {
           description,
           userId: userIdForQuery,
           endpoint: "http://localhost:3000",
-          // Add other fields as necessary
         },
       });
 
       const newFolder = await prisma.folder.create({
         data: {
-          name: folder, // You can customize this as needed
+          name: folder,
           projectId: newProject.id,
         },
       });
