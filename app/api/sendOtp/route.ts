@@ -1,41 +1,52 @@
-import { EmailTemplate } from "@/components/email-template";
+interface EmailTemplateProps {
+  firstName: string;
+  otp: string;
+}
+const EmailTemplate = ({ firstName, otp }: EmailTemplateProps) => `
+  <div>
+    <h3>Hello ${firstName},</h3>
+    <p>Your OTP is: <strong>${otp}</strong></p>
+  </div>
+`;
 import prisma from "@/lib/db/db.config";
 import { generateOTP } from "@/lib/otpGen";
 import { NextResponse, NextRequest } from "next/server";
-import { renderToStaticMarkup } from "react-dom/server";
-
 import { Resend } from "resend";
+
 const resend = new Resend(process.env.RESEND_API_KEY);
 
 export async function POST(req: NextRequest, res: NextResponse) {
   try {
     const reqBody = await req.json();
-    const { email } = await reqBody;
+    const { email } = reqBody;
+
     const user = await prisma.user.findUnique({
       where: {
         email,
       },
     });
+
     if (!user) {
       return NextResponse.json(
         { message: "User does not exists" },
         { status: 401 }
       );
     }
+
     if (user.isVerified) {
       return NextResponse.json(
         { message: "User is already verified" },
         { status: 401 }
       );
     }
-    var fullName = user.name || "User";
-    if (user) {
-      fullName = user?.name;
-    }
+
+    var fullName = user?.name;
+
     const otp = generateOTP();
     const expiryTime = new Date();
     expiryTime.setMinutes(expiryTime.getMinutes() + 2);
-    const updatedOtp = await prisma.user.update({
+
+    await prisma.user.update({
       where: {
         email,
       },
@@ -45,15 +56,13 @@ export async function POST(req: NextRequest, res: NextResponse) {
       },
     });
 
-    const emailHtml = renderToStaticMarkup(
-      EmailTemplate({ firstName: fullName, otp: otp })
-    );
+    const html = EmailTemplate({ firstName: fullName, otp: otp });
 
     const { data, error } = await resend.emails.send({
       from: "PShow <noreply@pranishpdl.ai>",
-      to: ["pranishisop@gmail.com"],
+      to: [email],
       subject: "Otp verification",
-      html: emailHtml,
+      html,
     });
 
     if (error) {
