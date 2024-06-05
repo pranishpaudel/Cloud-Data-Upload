@@ -61,7 +61,7 @@ export async function POST(req: NextRequest, res: NextResponse) {
     return NextResponse.json(
       {
         success: true,
-        imageUrl: `/tempGeneratedImage/${uniqueFilename}`,
+        imageUrl: `@/public/tempGeneratedImage/${uniqueFilename}`,
       },
       { status: 200 }
     );
