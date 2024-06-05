@@ -20,7 +20,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { SignUpOtp } from "@/components/signupOtp";
 
-export function Register() {
+const Register = () => {
   const router = useRouter();
   const [signupSuccess, setSignupSuccess] = useState(false);
   const [tempEmailState, setTempEmailState] = useState(false);
@@ -225,6 +225,6 @@ export function Register() {
       )}
     </>
   );
-}
+};
 
 export default Register;
