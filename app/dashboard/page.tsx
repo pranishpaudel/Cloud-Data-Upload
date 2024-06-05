@@ -35,7 +35,9 @@ function SearchIcon(props: React.SVGProps<SVGSVGElement>) {
 
 const Dashboard = async () => {
   const authy = await auth();
-  const projects = await getUserProjects({ email: authy?.user?.email });
+  const projects = await getUserProjects({
+    email: authy?.user?.email as string,
+  });
 
   return (
     <React.Fragment>

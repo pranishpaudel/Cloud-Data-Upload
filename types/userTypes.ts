@@ -13,6 +13,8 @@ declare module "next-auth" {
       isVerified: boolean;
       isAdmin: boolean;
       projects: string[];
+      name: string;
+      email: string | undefined;
     };
   }
 }
