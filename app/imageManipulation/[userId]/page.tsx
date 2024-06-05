@@ -4,7 +4,6 @@ import { useSession } from "next-auth/react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Video, VideoOff, Camera } from "lucide-react";
-import FormData from "form-data";
 import axios from "axios";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
@@ -32,7 +31,7 @@ const Page = ({ params }: { params: any }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [stream, setStream] = useState<MediaStream | null>(null);
   const [isCameraOn, setIsCameraOn] = useState(false);
-  const [selectedItem, setSelectedItem] = useState(null);
+  const [selectedItem, setSelectedItem] = useState<string | null>(null);
   const [userSnapShotData, setUserSnapShotData] = useAtom(snapShotDataAtom);
   const [croppedFaceImage, setCroppedFaceImage] = useState("");
   const [isEmotionShown, setIsEmotionShown] = useState(false);
@@ -46,7 +45,7 @@ const Page = ({ params }: { params: any }) => {
     setIsEmotionShown(!isEmotionShown);
   };
 
-  const handleSelection = (value) => {
+  const handleSelection = (value: string) => {
     setSelectedItem(value);
   };
 
@@ -130,7 +129,7 @@ const Page = ({ params }: { params: any }) => {
       const file = new File([blob], "snapshot.png", {
         type: "image/png",
       });
-      setReactFormDataState(file);
+      setReactFormDataState(file as any);
 
       try {
         const formData = new FormData();
@@ -138,7 +137,7 @@ const Page = ({ params }: { params: any }) => {
 
         const response = await fetch("/api/handleSnapshots", {
           method: "POST",
-          body: formData,
+          body: formData as BodyInit,
         });
 
         if (!response.ok) {
@@ -150,7 +149,7 @@ const Page = ({ params }: { params: any }) => {
         setUserSnapShotData(data[0]);
         const response1 = await fetch("/api/croppedFace", {
           method: "POST",
-          body: formData,
+          body: formData as BodyInit,
         });
         const data1 = await response1.json();
         console.log(data1[0].url);
@@ -163,11 +162,16 @@ const Page = ({ params }: { params: any }) => {
     });
 
     canvasRef.current.classList.add("snapshot-effect");
-    setTimeout(() => {
-      canvasRef.current.classList.remove("snapshot-effect");
-      canvasRef.current.style.display = "none";
-    }, 300);
+    if (canvasRef.current) {
+      setTimeout(() => {
+        if (canvasRef.current) {
+          canvasRef.current.classList.remove("snapshot-effect");
+          canvasRef.current.style.display = "none";
+        }
+      }, 300);
+    }
   };
+
   return (
     <div className="flex flex-col min-h-screen">
       <main className="flex-1 py-12 px-6 md:px-8">
@@ -189,7 +193,7 @@ const Page = ({ params }: { params: any }) => {
               </Button>
             </div>
             <div className="flex items-center gap-4">
-              <Select onValueChange={setSelectedItem}>
+              <Select onValueChange={handleSelection}>
                 <SelectTrigger className="flex-1 px-4 py-3 rounded-md bg-gray-100 dark:bg-gray-800 dark:text-white">
                   <SelectValue placeholder="Select AI tool" />
                 </SelectTrigger>

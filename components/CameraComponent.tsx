@@ -7,6 +7,7 @@ import {
   imageMixLoaderAtom,
 } from "@/helpers/state";
 import { useAtom } from "jotai";
+
 interface ICameraProps {
   textPrompt?: string;
   apiType: string;
@@ -21,6 +22,7 @@ const CameraComponent = ({ textPrompt, apiType }: ICameraProps) => {
   const [imageDimensions, setImageDimensions] = useAtom(skeltonPhotoDimensions);
   const [imageToRender, setImagetoRender] = useAtom(imageToRenderInMixAtom);
   const [cameraStarted, setCameraStarted] = useState(false);
+
   const startCamera = async () => {
     try {
       const mediaStream = await navigator.mediaDevices.getUserMedia({
@@ -37,7 +39,6 @@ const CameraComponent = ({ textPrompt, apiType }: ICameraProps) => {
     }
   };
 
-  
   useEffect(() => {
     if (!cameraStarted) {
       startCamera();
@@ -105,7 +106,7 @@ const CameraComponent = ({ textPrompt, apiType }: ICameraProps) => {
 
         const response = await fetch("/api/handleImageMixByFormData", {
           method: "POST",
-          body: formData,
+          body: formData as BodyInit,
         });
 
         if (!response.ok) {
@@ -122,10 +123,15 @@ const CameraComponent = ({ textPrompt, apiType }: ICameraProps) => {
     });
 
     canvasRef.current.classList.add("snapshot-effect");
-    setTimeout(() => {
-      canvasRef.current.classList.remove("snapshot-effect");
-      canvasRef.current.style.display = "none";
-    }, 300);
+
+    if (canvasRef.current) {
+      setTimeout(() => {
+        if (canvasRef.current) {
+          canvasRef.current.classList.remove("snapshot-effect");
+          canvasRef.current.style.display = "none";
+        }
+      }, 300);
+    }
   };
 
   return (
