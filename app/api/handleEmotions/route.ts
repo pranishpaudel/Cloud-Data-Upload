@@ -1,4 +1,3 @@
-import { NextResponse } from "next/server";
 import path from "path";
 import { mkdir } from "fs/promises";
 import axios from "axios";
@@ -6,9 +5,9 @@ import FormData from "form-data";
 import { auth } from "@/auth";
 import fs from "fs";
 import https from "https";
-import { NextApiRequest, NextApiResponse } from "next";
+import { NextResponse, NextRequest } from "next/server";
 
-export const POST = async (req: NextApiRequest, res: NextApiResponse) => {
+export async function POST(req: NextRequest, res: NextResponse) {
   try {
     const isUserAuthenticated = await auth();
     if (!isUserAuthenticated) {
@@ -60,4 +59,4 @@ export const POST = async (req: NextApiRequest, res: NextApiResponse) => {
       { status: 500 }
     );
   }
-};
+}
