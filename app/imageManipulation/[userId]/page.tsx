@@ -86,7 +86,7 @@ const Page = ({ params }: { params: any }) => {
         stream.getTracks().forEach((track) => track.stop());
       }
     };
-  }, [stream]);
+  });
 
   const stopCamera = () => {
     if (stream) {
@@ -134,7 +134,7 @@ const Page = ({ params }: { params: any }) => {
 
         const response = await fetch("/api/handleSnapshots", {
           method: "POST",
-          body: formData as unknown as BodyInit,
+          body: formData,
         });
 
         if (!response.ok) {
