@@ -1,4 +1,4 @@
-import { NextResponse } from "next/server";
+import { NextResponse, NextRequest } from "next/server";
 import path from "path";
 import { writeFile, mkdir } from "fs/promises";
 import axios from "axios";
@@ -6,7 +6,7 @@ import FormData from "form-data";
 import { auth } from "@/auth";
 import fs from "fs";
 
-export const POST = async (req, res) => {
+export async function POST(req: NextRequest, res: NextResponse) {
   const isUserAuthenticated = await auth();
   if (!isUserAuthenticated) {
     return NextResponse.json(
@@ -56,4 +56,4 @@ export const POST = async (req, res) => {
       { status: 500 }
     );
   }
-};
+}
