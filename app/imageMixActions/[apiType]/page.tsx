@@ -36,6 +36,7 @@ export default function Page({ params }: { params: PageParams }) {
       const res = await axios.post("/api/handleImageMixByUrl", {
         textPrompt: textContent,
         clientImageUrl,
+
         apiType,
       });
       const data = res.data;
