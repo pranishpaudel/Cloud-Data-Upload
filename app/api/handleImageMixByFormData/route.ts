@@ -24,10 +24,9 @@ export async function POST(req: NextRequest, res: NextResponse) {
     const formData = await req.formData();
 
     const file = formData.get("image");
-    console.log(file);
-    if (!file) {
+    if (!(file instanceof File)) {
       return NextResponse.json(
-        { error: "No files received." },
+        { error: "Invalid file received." },
         { status: 400 }
       );
     }
