@@ -5,14 +5,17 @@ const nextConfig = {
       {
         protocol: "https",
         hostname: "faces.nyc3.digitaloceanspaces.com",
+        pathname: "**", // Matches all paths under the specified hostname
       },
       {
         protocol: "https",
         hostname: "images.pexels.com",
+        pathname: "**",
       },
       {
         protocol: "https",
         hostname: "api.deepai.org",
+        pathname: "**",
       },
     ],
   },
