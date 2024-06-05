@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import axios from "axios";
 import { useAtom } from "jotai";
 import { uploadAtom } from "@/helpers/state";
@@ -35,7 +35,7 @@ function UploadComponent({ folder, project, projectId }: iUploadProps) {
     setFile(e.target.files[0]);
   };
 
-  const API_ENDPOINT = `http://localhost:3000/api/getSignedUrlForUpload?fileType=${getFileExtension(
+  const API_ENDPOINT = `/api/getSignedUrlForUpload?fileType=${getFileExtension(
     file?.name
   )}&folder=${folder}&project=${project}&fileName=${file?.name}`;
 
@@ -58,16 +58,32 @@ function UploadComponent({ folder, project, projectId }: iUploadProps) {
     });
   };
 
-  const handleUpload = async () => {
+  const handleUpload = useCallback(async () => {
     try {
       if (!file) {
         console.error("No file selected.");
         return;
       }
-      const presignedUrl = await getPresignedUrl();
-      await uploadToPresignedUrl(presignedUrl);
+
+      const API_ENDPOINT = `/api/getSignedUrlForUpload?fileType=${getFileExtension(
+        file.name
+      )}&folder=${folder}&project=${project}&fileName=${file.name}`;
+      const response = await axios.get(API_ENDPOINT);
+      const presignedUrl = response.data.message;
+
+      await axios.put(presignedUrl, file, {
+        headers: { "Content-Type": "application/pdf" },
+        onUploadProgress: (progressEvent) => {
+          const percentCompleted = Math.round(
+            (progressEvent.loaded * 100) / progressEvent.total
+          );
+          setProgress(percentCompleted);
+        },
+      });
+
       setUploaded(true);
       setuploadState(!uploadState);
+
       const res = await axios.post("/api/createFile", {
         fileName: file.name,
         folderName: folder,
@@ -78,13 +94,11 @@ function UploadComponent({ folder, project, projectId }: iUploadProps) {
     } catch (error) {
       console.error("Error uploading file:", error);
     }
-  };
+  }, [file, folder, project, projectId, setuploadState, uploadState, userId]);
 
   useEffect(() => {
-    if (file) {
-      handleUpload();
-    }
-  }, [file]);
+    if (file) handleUpload();
+  }, [file, handleUpload]);
 
   useEffect(() => {
     if (uploaded) {

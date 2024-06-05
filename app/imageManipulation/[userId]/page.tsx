@@ -86,7 +86,7 @@ const Page = ({ params }: { params: any }) => {
         stream.getTracks().forEach((track) => track.stop());
       }
     };
-  }, []);
+  }, [stream]);
 
   const stopCamera = () => {
     if (stream) {

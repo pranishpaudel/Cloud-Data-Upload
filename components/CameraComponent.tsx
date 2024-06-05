@@ -45,7 +45,7 @@ const CameraComponent = ({ textPrompt, apiType }: ICameraProps) => {
         stream.getTracks().forEach((track) => track.stop());
       }
     };
-  }, []);
+  }, [stream]);
 
   const stopCamera = () => {
     if (stream) {
