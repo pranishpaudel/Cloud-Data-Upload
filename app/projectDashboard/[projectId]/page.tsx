@@ -19,12 +19,16 @@ import ListFileComponent from "@/components/ListFileComponent";
 import UploadComponent from "@/components/UploadComponent";
 import CreateFolder from "@/components/CreateFolder";
 
+interface Project {
+  id: string;
+  name: string;
+}
 const Page = ({ params }: any) => {
   // Renamed to start with uppercase
   const projectId = params.projectId;
   //next auth client session
   const { data: session, status } = useSession();
-  const [project, setProject] = useState([]);
+  const [project, setProject] = useState<Project | null>(null);
   const [fileListings, setfileListings] = useState([]);
   const [showFile, setShowFile] = useAtom(updateShowFileState);
   const [openButtonOfListFolderClicked, setopenButtonOfListFolderClicked] =
@@ -34,7 +38,9 @@ const Page = ({ params }: any) => {
   const [userAuthorized, setuserAuthorized] = useState(false);
   const router = useRouter();
   const userId = session?.user.id;
-  const backButtonHandler = (typeOfBack: string) => {
+  const backButtonHandler = (
+    event: React.MouseEvent<SVGSVGElement, MouseEvent>
+  ) => {
     setopenButtonOfListFolderClicked(false);
     setiopenFolderInfo({
       projectId: "",
@@ -155,8 +161,8 @@ const Page = ({ params }: any) => {
           ) : (
             <div className="h-[350px] w-[80vw] flex justify-center items-center  bg-gray-100 overflow-y-auto border ml-[140px] rounded-md ">
               <ListFolderComponent
-                userId={userId}
-                projectName={project?.name}
+                userId={userId as string}
+                projectName={project?.name as string}
                 projectId={projectId}
               />
             </div>
@@ -166,8 +172,8 @@ const Page = ({ params }: any) => {
           <>
             <div className="flex justify-center items-center border-0 mt-1">
               <CreateFolder
-                userId={userId}
-                projectName={project?.name}
+                userId={userId as string}
+                projectName={project?.name as string}
                 projectId={projectId}
               />
             </div>
