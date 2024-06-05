@@ -14,11 +14,11 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       async authorize(credentials, req) {
         const { identifier, password } = credentials;
         try {
-          const user = await prisma.user.findUnique({
+          const user = (await prisma.user.findUnique({
             where: {
               email: identifier as string,
             },
-          });
+          })) as any;
 
           if (!user) throw new Error("User not found");
 
@@ -31,16 +31,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           );
           if (!isValidPassword) throw new Error("Invalid password");
 
-          const nextAuthUser: User = {
-            userid: user.id,
-            name: user.name || "",
-            email: user.email,
-            isVerified: user.isVerified,
-            isAdmin: user.isAdmin,
-            projects: [],
-          };
-
-          return nextAuthUser;
+          return user;
         } catch (error: any) {
           throw new Error(error.message);
         }
