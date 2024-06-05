@@ -30,6 +30,7 @@ export async function POST(req: NextRequest, res: NextResponse) {
         { status: 400 }
       );
     }
+
     const apiType = formData.get("apiType");
     const textPrompt = formData.get("textPrompt") || "";
     console.log("API KO TYPE", apiType);

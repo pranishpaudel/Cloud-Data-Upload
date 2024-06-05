@@ -28,8 +28,9 @@ export async function POST(req: NextRequest, res: NextResponse) {
         { status: 401 }
       );
     }
+    var fullName = user.name || "User";
     if (user) {
-      var fullName = user?.name;
+      fullName = user?.name;
     }
     const otp = generateOTP();
     const expiryTime = new Date();
