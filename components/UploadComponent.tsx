@@ -41,7 +41,7 @@ function UploadComponent({ folder, project, projectId }: iUploadProps) {
     }
   };
 
-  const API_ENDPOINT = `/api/getSignedUrlForUpload?fileType=${
+  const API_ENDPOINT = `https://vcan.io/api/getSignedUrlForUpload?fileType=${
     file ? getFileExtension(file.name) : ""
   }&folder=${folder}&project=${project}&fileName=${file?.name}`;
 
