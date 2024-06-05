@@ -4,10 +4,17 @@ import { getToken } from "next-auth/jwt";
 export async function middleware(request: NextRequest) {
   const url = request.nextUrl;
   const pathname = url.pathname;
+
+  if (!process.env.AUTH_SECRET) {
+    throw new Error("AUTH_SECRET is not defined in environment variables.");
+  }
+
   const token = await getToken({
     req: request,
     secret: process.env.AUTH_SECRET,
+    salt: "dsad23423cgt1aadaaaaaa",
   });
+
   if (
     !token &&
     (pathname.startsWith("/dashboard") ||
