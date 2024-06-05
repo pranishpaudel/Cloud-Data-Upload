@@ -5,6 +5,7 @@ import axios from "axios";
 import { useAtom } from "jotai";
 import { uploadAtom } from "@/helpers/state";
 import { useSession } from "next-auth/react";
+import { File } from "buffer";
 
 interface iUploadProps {
   folder: string;
@@ -13,7 +14,7 @@ interface iUploadProps {
 }
 
 function UploadComponent({ folder, project, projectId }: iUploadProps) {
-  const [file, setFile] = useState(null);
+  const [file, setFile] = useState<File | null>(null);
   const [progress, setProgress] = useState(0);
   const [uploaded, setUploaded] = useState(false);
   const [uploadState, setuploadState] = useAtom(uploadAtom);
@@ -26,17 +27,17 @@ function UploadComponent({ folder, project, projectId }: iUploadProps) {
     return parts.length > 1 ? parts.pop() : "";
   };
 
-  const handleDrop = (e) => {
+  const handleDrop = (e: any) => {
     e.preventDefault();
     setFile(e.dataTransfer.files[0]);
   };
 
-  const handleFileSelect = (e) => {
+  const handleFileSelect = (e: any) => {
     setFile(e.target.files[0]);
   };
 
   const API_ENDPOINT = `/api/getSignedUrlForUpload?fileType=${getFileExtension(
-    file?.name
+    file!.name
   )}&folder=${folder}&project=${project}&fileName=${file?.name}`;
 
   const getPresignedUrl = async () => {
@@ -44,12 +45,12 @@ function UploadComponent({ folder, project, projectId }: iUploadProps) {
     return response.data.message;
   };
 
-  const uploadToPresignedUrl = async (presignedUrl) => {
+  const uploadToPresignedUrl = async (presignedUrl: string) => {
     await axios.put(presignedUrl, file, {
       headers: {
         "Content-Type": "application/pdf",
       },
-      onUploadProgress: (progressEvent) => {
+      onUploadProgress: (progressEvent: any) => {
         const percentCompleted = Math.round(
           (progressEvent.loaded * 100) / progressEvent.total
         );
@@ -73,7 +74,7 @@ function UploadComponent({ folder, project, projectId }: iUploadProps) {
 
       await axios.put(presignedUrl, file, {
         headers: { "Content-Type": "application/pdf" },
-        onUploadProgress: (progressEvent) => {
+        onUploadProgress: (progressEvent: any) => {
           const percentCompleted = Math.round(
             (progressEvent.loaded * 100) / progressEvent.total
           );
@@ -163,7 +164,7 @@ function UploadComponent({ folder, project, projectId }: iUploadProps) {
   );
 }
 
-function CircleCheckIcon(props) {
+const CircleCheckIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => {
   return (
     <svg
       {...props}
@@ -181,9 +182,9 @@ function CircleCheckIcon(props) {
       <path d="m9 12 2 2 4-4" />
     </svg>
   );
-}
+};
 
-function CloudUploadIcon(props) {
+const CloudUploadIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => {
   return (
     <svg
       {...props}
@@ -202,6 +203,6 @@ function CloudUploadIcon(props) {
       <path d="m16 16-4-4-4 4" />
     </svg>
   );
-}
+};
 
 export default UploadComponent;
