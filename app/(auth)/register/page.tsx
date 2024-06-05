@@ -141,7 +141,7 @@ const Register = () => {
                 Create Account
               </h1>
               <p className="text-sm text-gray-500 dark:text-gray-400">
-                Join PShow today.
+                Join Vcan today.
               </p>
             </div>
             <Form {...form}>
