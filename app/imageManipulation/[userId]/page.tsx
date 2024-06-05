@@ -36,8 +36,9 @@ const Page = ({ params }: { params: any }) => {
   const [userSnapShotData, setUserSnapShotData] = useAtom(snapShotDataAtom);
   const [croppedFaceImage, setCroppedFaceImage] = useState("");
   const [isEmotionShown, setIsEmotionShown] = useState(false);
+  const [cameraStarted, setCameraStarted] = useState(false);
   const [switchEnabled, setSwitchEnabled] = useState(false);
-
+  const streamRef = useRef<MediaStream | null>(null);
   const router = useRouter();
   console.log(userId);
 
@@ -79,14 +80,17 @@ const Page = ({ params }: { params: any }) => {
   };
 
   useEffect(() => {
-    startCamera();
+    if (!cameraStarted) {
+      startCamera();
+      setCameraStarted(true);
+    }
 
     return () => {
       if (stream) {
         stream.getTracks().forEach((track) => track.stop());
       }
     };
-  });
+  }, [cameraStarted, stream]);
 
   const stopCamera = () => {
     if (stream) {

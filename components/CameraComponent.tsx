@@ -20,7 +20,7 @@ const CameraComponent = ({ textPrompt, apiType }: ICameraProps) => {
   const [loader, setLoader] = useAtom(imageMixLoaderAtom);
   const [imageDimensions, setImageDimensions] = useAtom(skeltonPhotoDimensions);
   const [imageToRender, setImagetoRender] = useAtom(imageToRenderInMixAtom);
-
+  const [cameraStarted, setCameraStarted] = useState(false);
   const startCamera = async () => {
     try {
       const mediaStream = await navigator.mediaDevices.getUserMedia({
@@ -37,15 +37,19 @@ const CameraComponent = ({ textPrompt, apiType }: ICameraProps) => {
     }
   };
 
+  
   useEffect(() => {
-    startCamera();
+    if (!cameraStarted) {
+      startCamera();
+      setCameraStarted(true);
+    }
 
     return () => {
       if (stream) {
         stream.getTracks().forEach((track) => track.stop());
       }
     };
-  });
+  }, [cameraStarted, stream]);
 
   const stopCamera = () => {
     if (stream) {
