@@ -72,5 +72,5 @@ This project is open source and available under multiple licenses. Feel free to 
 ## Acknowledgements
 
  - GCES IT EXPO😃 
- - All the future opensource commitors😃 
+ - All the future opensource committers😃 
 
